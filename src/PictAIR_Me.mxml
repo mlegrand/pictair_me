@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<WindowedApplication xmlns="http://ns.adobe.com/mxml/2009" xmlns:view="com.pnwrain.pictair_me.view.*"
-	title="Picture_Me {applicationManager.appVersion}"
-	layout="absolute"
-	width="640"
-	height="700"
-	horizontalScrollPolicy="off"
-	verticalScrollPolicy="off"
-	creationComplete="onCreationComplete()" >
-	<states>
-		<State name="Base" />
-		<State name="photoDisplay" />
-	</states>
+<Application height="840" width="700"
+					 layout="absolute"
+					 backgroundAlpha="0"
+					 creationComplete="onCreationComplete()"
+					 horizontalScrollPolicy="off"
+					 verticalScrollPolicy="off"
+					 xmlns:mx="library:adobe/flex/halo"
+					 xmlns="http://ns.adobe.com/mxml/2009"
+					 xmlns:view="com.pnwrain.pictair_me.view.*">
 	
+	
+	<states>
+		<State name="Base"/>
+		<State name="photoDisplay"/>
+	</states>
 	<Script>
 		<![CDATA[
 			import mx.core.UIComponent;
@@ -22,37 +24,32 @@
 			import com.pnwrain.pictair_me.business.PictureManager;
 			import com.pnwrain.pictair_me.business.ApplicationManager;
 			import com.pnwrain.pictair_me.vo.Picture;
-			
 			[Bindable]
 			private var filterManager:FilterManager;
 			[Bindable]
 			private var pictureManager:PictureManager;
 			[Bindable]
 			private var applicationManager:ApplicationManager;
-			
 			[Bindable]
 			private var selectedPicture:Picture;
-			
 			private function onCreationComplete():void {
-				filterManager = new FilterManager();
-				pictureManager = new PictureManager();
-				applicationManager = new ApplicationManager();
-				pictureManager.loadPictures();
+			filterManager = new FilterManager();
+			pictureManager = new PictureManager();
+			applicationManager = new ApplicationManager();
+			pictureManager.loadPictures();
 			}
-		
 			private function loadFilter(event:Event):void {
-				vd.filters = filterManager.getFilter(event.target.selectedItem);
+			vd.filters = filterManager.getFilter(event.target.selectedItem);
 			}
-			
 			private function takePicture():void {
-				timer.visible = false;
-				pictureManager.savePicture(vd);
+			timer.visible = false;
+			pictureManager.savePicture(vd);
 			}
 			private function slideListPosition(steps:int):void{
-				var newPosition:int = pictureList.horizontalScrollPosition + steps;
-				if ( newPosition >= 0 && newPosition < pictureList.dataProvider.length-3) {
-					pictureList.horizontalScrollPosition += steps;
-				}
+			var newPosition:int = pictureList.horizontalScrollPosition + steps;
+			if ( newPosition >= 0 && newPosition < pictureList.dataProvider.length-3) {
+			pictureList.horizontalScrollPosition += steps;
+			}
 			}
 			private function displayPhoto(event:Event):void {
 				selectedPicture = event.target.selectedItem;
@@ -62,23 +59,114 @@
 				selectedPicture = null;
 				currentState = "";
 			}
+			
+			///////////////////
+			//Matt
+			///////////////////
+			
+			protected function minBtnClick(event:MouseEvent):void
+			{
+				this.stage.nativeWindow.minimize();
+			}
+			
+			protected function closeBtnClick(event:MouseEvent):void
+			{
+				this.stage.nativeWindow.close();
+			}
+			
+			
 		]]>
 	</Script>
-	<view:VideoDisplay id="vd" width="640" height="480" />
-	<Image source="{selectedPicture.url}" width="640" height="480" includeIn="photoDisplay" />
-	<view:CountDownTimer id="timer" skinClass="{com.pnwrain.pictair_me.skin.CountDownTimerSkin}" horizontalCenter="0" top="380" visible="false"
-		countDownStart="timer.visible=true" countDownCancel="timer.visible=false" countDownEnd="takePicture();"  />
-
-	<ApplicationControlBar top="480" width="100%" dock="false" >
-		<Canvas width="100%" height="100%">
-			<FxButton click="pictureManager.upload(selectedPicture)" includeIn="photoDisplay" label="Upload to Twitter" verticalCenter="0" left="10" />
-			<FxButton click="timer.countDown()" click.photoDisplay="captureVideo()" skinClass="com.pnwrain.pictair_me.skin.CameraButtonSkin" height="50" width="50" horizontalCenter="0" verticalCenter="0"/>
-			<ComboBox dataProvider="{filterManager.filters}" labelField="displayName" verticalCenter="0" right="10" change="loadFilter(event)"/>
-		</Canvas>
-	</ApplicationControlBar>
-	<HBox bottom="0" width="100%" height="140" horizontalGap="0">
-		<FxButton height="100%" width="20" click="slideListPosition(-1)" />
-		<HorizontalList liveScrolling="true" id="pictureList" change="displayPhoto(event)" width="100%" height="140" dataProvider="{pictureManager.pictures}" itemRenderer="com.pnwrain.pictair_me.view.ImageThumbnail" horizontalScrollPolicy="off" />
-		<FxButton height="100%" width="20" label="" click="slideListPosition(1)" />
-	</HBox>
-</WindowedApplication>
+	
+	<Canvas id="mainCanvas"
+			x="15" y="15"
+			styleName="canvasStyle"
+			height="{this.height-30}" width="{this.width-30}"
+			backgroundAlpha="0"
+			borderSkin="com.pnwrain.pictair_me.skin.GradientFillSkin"
+			dropShadowEnabled="true"
+			filters="{[new GlowFilter(0x000000, .55, 12, 12, 2), new GlowFilter(0x000000, 1, 5, 5, 5, 1, true)]}"
+			horizontalScrollPolicy="off"
+			verticalScrollPolicy="off">
+		<HBox width="100%"
+			  mouseDown="{this.stage.nativeWindow.startMove();}"
+			  mouseEnabled="true"
+			  paddingBottom="4"
+			  paddingLeft="25"
+			  paddingRight="25"
+			  paddingTop="8">
+			<Label id="appTitle"
+				   alpha="0.45"
+				   color="#FFFFFF"
+				   filters="{[new BevelFilter(2,45,0xFFFFFF, .5, 0x000000)]}"
+				   fontSize="14"
+				   fontWeight="bold"
+				   text="PictAir Me"/>
+			<Spacer width="100%"/>
+			<FxButton id="minBtn" 
+						skinClass="com.pnwrain.pictair_me.skin.MinButtonSkin"
+					  click="minBtnClick(event)"/>
+			<FxButton id="closeBtn"
+						skinClass="com.pnwrain.pictair_me.skin.CloseButtonSkin"
+					  click="closeBtnClick(event)"/>
+		</HBox>	
+		<view:VideoDisplay id="vd"
+						   height="480" width="640"
+						   y="30"
+						   backgroundColor="#333333"
+						   filters="{[new GlowFilter(0x000000, 1, 10, 10, 2, 1, true)]}"
+						   borderStyle="solid"
+						   cornerRadius="6"/>
+		<Image height="480" width="640"
+			   y="30" x="15"
+			   includeIn="photoDisplay"
+			   source="{selectedPicture.url}"/>
+		<view:CountDownTimer id="timer"
+							 countDownCancel="timer.visible=false"
+							 countDownEnd="takePicture();"
+							 countDownStart="timer.visible=true"
+							 horizontalCenter="0"
+							 skinClass="{com.pnwrain.pictair_me.skin.CountDownTimerSkin}"
+							 top="380"
+							 visible="false"/>
+		<ApplicationControlBar width="{mainCanvas.width-30}"
+							   x="15"
+							   dock="false"
+							   top="520">
+			<Canvas height="100%" width="100%" >
+				<FxButton label="Upload to Twitter"
+						  click="pictureManager.upload(selectedPicture)"
+						  includeIn="photoDisplay"
+						  left="10"
+						  verticalCenter="0"/>
+				<FxButton height="50" width="50"
+						  click="timer.countDown()"
+						  click.photoDisplay="captureVideo()"
+						  horizontalCenter="0"
+						  skinClass="com.pnwrain.pictair_me.skin.CameraButtonSkin"
+						  verticalCenter="0"/>
+				<ComboBox change="loadFilter(event)"
+						  dataProvider="{filterManager.filters}"
+						  labelField="displayName"
+						  right="10"
+						  verticalCenter="0"/>
+			</Canvas>
+		</ApplicationControlBar>
+		<HBox height="140" width="640"
+			  bottom="10" x="10"
+			  horizontalGap="0">
+			<FxButton height="100%" width="20"
+					  click="slideListPosition(-1)"/>
+			<HorizontalList id="pictureList"
+							height="140" width="100%"
+							change="displayPhoto(event)"
+							dataProvider="{pictureManager.pictures}"
+							horizontalScrollPolicy="off"
+							itemRenderer="com.pnwrain.pictair_me.view.ImageThumbnail"
+							liveScrolling="true"/>
+			<FxButton label=""
+					  height="100%" width="20"
+					  click="slideListPosition(1)"/>
+		</HBox>
+	</Canvas>
+</Application>

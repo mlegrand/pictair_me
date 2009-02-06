@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fx:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	  minWidth="15" minHeight="15"
+	  alpha.disabled="0.5">
+
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("mx.components.FxButton")]
+	</fx:Metadata>
+    
+	<!-- states -->
+	<fx:states>
+		<fx:State name="up" />
+		<fx:State name="over" />
+		<fx:State name="down" />
+		<fx:State name="disabled" />
+	</fx:states>
+	
+	<fx:Ellipse bottom="0"
+				filters.over="{[new GlowFilter(0x770000, .5), new BevelFilter(2,45)]}"
+				filters.up="{[new BevelFilter(2,45)]}"
+				left="0"
+				right="0"
+				top="0">
+		<fx:fill>
+			<fx:RadialGradient>
+				<fx:entries>
+					<fx:GradientEntry color="0xFF0000"/>
+					<fx:GradientEntry color="0x770000"/>
+				</fx:entries>
+			</fx:RadialGradient>
+		</fx:fill>
+	</fx:Ellipse>
+	<fx:Ellipse alpha=".35"
+				bottom="5"
+				left="0"
+				right="2"
+				top="0">
+		<fx:fill>
+			<fx:LinearGradient rotation=".5">
+				<fx:entries>
+					<fx:GradientEntry alpha=".5"
+									  color="0xFFFFFF"/>
+					<fx:GradientEntry color="0xFFFFFF"/>
+				</fx:entries>
+			</fx:LinearGradient>
+		</fx:fill>
+	</fx:Ellipse>
+</fx:Skin>

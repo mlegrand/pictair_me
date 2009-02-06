@@ -29,7 +29,7 @@ package com.pnwrain.pictair_me.view
 			
 			
 			this.rotationY = 180;
-			this.x = this.width;
+			this.x = this.width+15;
 		}
 		
 	}
